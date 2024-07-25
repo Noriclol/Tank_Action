@@ -1,12 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://4d4chclpmytd"]
+[gd_scene load_steps=6 format=3 uid="uid://4d4chclpmytd"]
 
 [ext_resource type="Script" path="res://scripts/UI/Select_Team_Menu.gd" id="1_f2d25"]
-[ext_resource type="PackedScene" uid="uid://xc5liawhjvw4" path="res://scenes/UI/Panels/german_panel.tscn" id="2_w3l06"]
-[ext_resource type="PackedScene" uid="uid://dp502fs1mgwxd" path="res://scenes/UI/Panels/soviet_panel.tscn" id="3_1dfer"]
+[ext_resource type="StyleBox" uid="uid://dnytn2ds36gba" path="res://scenes/UI/StyleBoxLines/H_Separator_Red.tres" id="2_m2st2"]
 [ext_resource type="StyleBox" uid="uid://b01ompb1pq1yk" path="res://scenes/UI/StyleBoxLines/H_Separator_White.tres" id="3_rdv6a"]
-[ext_resource type="PackedScene" uid="uid://c718rfs161alu" path="res://scenes/UI/Panels/spectator_panel.tscn" id="5_ty6yr"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50r1q"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_q83cs"]
+color = Color(0.174054, 0.366885, 0.842092, 1)
+thickness = 2
 
 [node name="Select_Team_Menu" type="Control"]
 layout_mode = 3
@@ -50,15 +52,73 @@ horizontal_alignment = 1
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="German_Panel" parent="PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_w3l06")]
+[node name="German_Panel" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Soviet_Panel" parent="PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_1dfer")]
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="PanelContainer/VBoxContainer/HBoxContainer/German_Panel"]
+_spawnable_scenes = PackedStringArray("res://scenes/UI/player_entry.tscn")
+spawn_path = NodePath("../GermanTeam/G_Team_Roster")
+
+[node name="GermanTeam" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/German_Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GermanButton" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer/German_Panel/GermanTeam"]
+layout_mode = 2
+text = "[Germany] Join"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/HBoxContainer/German_Panel/GermanTeam"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_q83cs")
+
+[node name="G_Team_Roster" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/German_Panel/GermanTeam"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Soviet_Panel" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="PanelContainer/VBoxContainer/HBoxContainer/Soviet_Panel"]
+_spawnable_scenes = PackedStringArray("res://scenes/UI/player_entry.tscn")
+spawn_path = NodePath("../SovietTeam/S_Team_Roster")
+
+[node name="SovietTeam" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/Soviet_Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SovietButton" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer/Soviet_Panel/SovietTeam"]
+layout_mode = 2
+text = "[Soviet] Join"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer/HBoxContainer/Soviet_Panel/SovietTeam"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/separator = ExtResource("2_m2st2")
+
+[node name="S_Team_Roster" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/Soviet_Panel/SovietTeam"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/separator = ExtResource("3_rdv6a")
 
-[node name="Spectator_Panel" parent="PanelContainer/VBoxContainer" instance=ExtResource("5_ty6yr")]
+[node name="Spectator_Panel" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="SpectatorButton" type="Button" parent="PanelContainer/VBoxContainer/Spectator_Panel"]
+layout_mode = 2
+text = "[Spectator] Join"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="PanelContainer/VBoxContainer/Spectator_Panel"]
+_spawnable_scenes = PackedStringArray("res://scenes/UI/player_entry.tscn")
+spawn_path = NodePath("../Spectator_Roster")
+
+[node name="Spectator_Roster" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Spectator_Panel"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/HBoxContainer/German_Panel/GermanTeam/GermanButton" to="." method="_on_german_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/HBoxContainer/Soviet_Panel/SovietTeam/SovietButton" to="." method="_on_soviet_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Spectator_Panel/SpectatorButton" to="." method="_on_spectator_button_pressed"]

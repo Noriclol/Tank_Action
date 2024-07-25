@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bxviakmbilden"]
+[gd_scene load_steps=6 format=3 uid="uid://bxviakmbilden"]
 
 [ext_resource type="Script" path="res://scripts/Game.gd" id="1_38o0x"]
 [ext_resource type="Texture2D" uid="uid://wto4njuu2xbu" path="res://assets/textures/Tileset/TX Tileset Grass.png" id="2_raqps"]
+[ext_resource type="PackedScene" uid="uid://4d4chclpmytd" path="res://scenes/UI/Menues/select_team_menu.tscn" id="4_7ihuo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_30ec0"]
 texture = ExtResource("2_raqps")
@@ -207,3 +208,8 @@ unique_name_in_owner = true
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://scenes/Player/player.tscn")
 spawn_path = NodePath("../Players")
+
+[node name="UserInterface" type="CanvasLayer" parent="."]
+
+[node name="Select_Team_Menu" parent="UserInterface" instance=ExtResource("4_7ihuo")]
+unique_name_in_owner = true
