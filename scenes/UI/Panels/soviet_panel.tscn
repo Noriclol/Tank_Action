@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://dp502fs1mgwxd"]
+
+[ext_resource type="StyleBox" uid="uid://dnytn2ds36gba" path="res://scenes/UI/StyleBoxLines/H_Separator_Red.tres" id="1_2bn6x"]
+
+[node name="Soviet_Panel" type="PanelContainer"]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/UI/player_entry.tscn")
+spawn_path = NodePath("../SovietTeam/S_Team_Roster")
+
+[node name="SovietTeam" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button2" type="Button" parent="SovietTeam"]
+layout_mode = 2
+text = "[Soviet] Join"
+
+[node name="HSeparator" type="HSeparator" parent="SovietTeam"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/separator = ExtResource("1_2bn6x")
+
+[node name="S_Team_Roster" type="VBoxContainer" parent="SovietTeam"]
+unique_name_in_owner = true
+layout_mode = 2

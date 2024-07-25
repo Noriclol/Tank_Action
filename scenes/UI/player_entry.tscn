@@ -1,0 +1,80 @@
+[gd_scene load_steps=5 format=3 uid="uid://doymgs7f1ifgf"]
+
+[ext_resource type="Script" path="res://scripts/UI/player_entry.gd" id="1_d8sug"]
+[ext_resource type="Texture2D" uid="uid://bongmogyrpg1l" path="res://assets/textures/Siluettes/228787-200.png" id="1_pcqbm"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ukq75"]
+font_size = 22
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 0.458824)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cnayj"]
+properties/0/path = NodePath("HBox/Name_Label:text")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("HBox/KillScore_Label:text")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("HBox/Name_Label:modulate")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("HBox/Kills_Label:modulate")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath("HBox/TankImage:modulate")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath("HBox/KillScore_Label:modulate")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+
+[node name="PlayerEntry" type="PanelContainer"]
+script = ExtResource("1_d8sug")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Name_Label" type="Label" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PlayerName"
+label_settings = SubResource("LabelSettings_ukq75")
+
+[node name="VSeparator3" type="VSeparator" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Kills_Label" type="Label" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Kills:  "
+label_settings = SubResource("LabelSettings_ukq75")
+
+[node name="TankImage" type="TextureRect" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+texture = ExtResource("1_pcqbm")
+expand_mode = 2
+
+[node name="KillScore_Label" type="Label" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "0"
+label_settings = SubResource("LabelSettings_ukq75")
+
+[node name="VSeparator2" type="VSeparator" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Control" type="Control" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_cnayj")

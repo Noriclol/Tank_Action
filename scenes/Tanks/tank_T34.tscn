@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://4edawfln0lnp"]
+
+[ext_resource type="Script" path="res://scripts/Player/Tank.gd" id="1_obtel"]
+[ext_resource type="Texture2D" uid="uid://c65cwia3gs4qw" path="res://assets/textures/Tanks/T-34/ww2_top_view_hull4.png" id="2_uhf2k"]
+[ext_resource type="Texture2D" uid="uid://cm3klrfefjbuw" path="res://assets/textures/Tanks/T-34/ww2_top_view_turret4.png" id="3_tuv1f"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j3l"]
+size = Vector2(65, 111)
+
+[node name="T-34" type="RigidBody2D"]
+mass = 26500.0
+gravity_scale = 0.0
+linear_damp = 5.0
+angular_damp = 5.0
+script = ExtResource("1_obtel")
+
+[node name="Body" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("2_uhf2k")
+offset = Vector2(-1.5, 0)
+
+[node name="Turret" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("3_tuv1f")
+offset = Vector2(-1.5, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1.5, 10.5)
+shape = SubResource("RectangleShape2D_k7j3l")

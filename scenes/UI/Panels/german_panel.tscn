@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://xc5liawhjvw4"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_q83cs"]
+color = Color(0.174054, 0.366885, 0.842092, 1)
+thickness = 2
+
+[node name="German_Panel" type="PanelContainer"]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/UI/player_entry.tscn")
+spawn_path = NodePath("../GermanTeam/G_Team_Roster")
+
+[node name="GermanTeam" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="GermanTeam"]
+layout_mode = 2
+text = "[Germany] Join"
+
+[node name="HSeparator" type="HSeparator" parent="GermanTeam"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_q83cs")
+
+[node name="G_Team_Roster" type="VBoxContainer" parent="GermanTeam"]
+unique_name_in_owner = true
+layout_mode = 2

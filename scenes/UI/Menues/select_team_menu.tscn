@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=3 uid="uid://4d4chclpmytd"]
+
+[ext_resource type="Script" path="res://scripts/UI/Select_Team_Menu.gd" id="1_f2d25"]
+[ext_resource type="PackedScene" uid="uid://xc5liawhjvw4" path="res://scenes/UI/Panels/german_panel.tscn" id="2_w3l06"]
+[ext_resource type="PackedScene" uid="uid://dp502fs1mgwxd" path="res://scenes/UI/Panels/soviet_panel.tscn" id="3_1dfer"]
+[ext_resource type="StyleBox" uid="uid://b01ompb1pq1yk" path="res://scenes/UI/StyleBoxLines/H_Separator_White.tres" id="3_rdv6a"]
+[ext_resource type="PackedScene" uid="uid://c718rfs161alu" path="res://scenes/UI/Panels/spectator_panel.tscn" id="5_ty6yr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50r1q"]
+
+[node name="Select_Team_Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f2d25")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -302.0
+offset_top = -349.0
+offset_right = 302.0
+offset_bottom = -178.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.25, 1.25)
+pivot_offset = Vector2(302, 0)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_50r1q")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 56
+text = "Lobby"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="German_Panel" parent="PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_w3l06")]
+layout_mode = 2
+
+[node name="Soviet_Panel" parent="PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_1dfer")]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("3_rdv6a")
+
+[node name="Spectator_Panel" parent="PanelContainer/VBoxContainer" instance=ExtResource("5_ty6yr")]
+layout_mode = 2

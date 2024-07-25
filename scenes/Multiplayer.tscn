@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://butkfh76hy5gv"]
+
+[ext_resource type="Script" path="res://scripts/GameServer.gd" id="1_gpkfp"]
+[ext_resource type="PackedScene" uid="uid://bxviakmbilden" path="res://scenes/Map/GameMap.tscn" id="2_wdlkb"]
+[ext_resource type="PackedScene" uid="uid://ckhx338kasxql" path="res://scenes/user_interface.tscn" id="5_6am51"]
+
+[node name="Multiplayer" type="Node"]
+script = ExtResource("1_gpkfp")
+game_scene = ExtResource("2_wdlkb")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+unique_name_in_owner = true
+_spawnable_scenes = PackedStringArray("res://scenes/Map/GameMap.tscn")
+spawn_path = NodePath("../Level")
+spawn_limit = 25
+
+[node name="Level" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="UserInterface" parent="." instance=ExtResource("5_6am51")]
+
+[node name="HUD" type="Control" parent="UserInterface"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="infoLabel" type="Label" parent="UserInterface/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[connection signal="create_client" from="UserInterface/Connect_Menu" to="." method="create_client"]
+[connection signal="create_server" from="UserInterface/Connect_Menu" to="." method="create_server"]
+
+[editable path="UserInterface"]

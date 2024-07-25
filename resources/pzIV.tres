@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TankData" load_steps=3 format=3 uid="uid://du57okvkh1hhl"]
+
+[ext_resource type="PackedScene" uid="uid://m32uyfjabtn0" path="res://scenes/Player/bullet.tscn" id="1_i2ydl"]
+[ext_resource type="Script" path="res://scripts/Resources/TankData.gd" id="1_s7uw1"]
+
+[resource]
+script = ExtResource("1_s7uw1")
+tank_weight = 10.0
+tank_armor = 100.0
+tank_thrust_force = 2000.0
+tank_rotation_force = 50000.0
+turret_rotation_speed = 0.04
+bullet_damage = 10.0
+bullet_speed = 1000.0
+bullet_instance = ExtResource("1_i2ydl")

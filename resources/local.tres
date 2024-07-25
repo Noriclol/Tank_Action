@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlayerData" load_steps=2 format=3 uid="uid://br1ovkj6s2p6x"]
+
+[ext_resource type="Script" path="res://scripts/Resources/PlayerData.gd" id="1_nk2v1"]
+
+[resource]
+script = ExtResource("1_nk2v1")
+custom_tank_name = "Tank"
+kills = 0
+player_id = 0
+player_team = 0

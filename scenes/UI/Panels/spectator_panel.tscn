@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c718rfs161alu"]
+
+[node name="Spectator_Panel" type="PanelContainer"]
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+text = "[Spectator] Join"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/UI/player_entry.tscn")
+spawn_path = NodePath("../Spectator_Roster")
+
+[node name="Spectator_Roster" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2

@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://58dm58orr83x"]
+
+[ext_resource type="Script" path="res://scripts/Player/Tank.gd" id="1_2ofm3"]
+[ext_resource type="Texture2D" uid="uid://de138ci64thsf" path="res://assets/textures/Tanks/KV-1/ww2_top_view_hull5.png" id="2_78vkh"]
+[ext_resource type="Texture2D" uid="uid://bmj4toufs1ia" path="res://assets/textures/Tanks/KV-1/ww2_top_view_turret5.png" id="3_fru05"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j3l"]
+size = Vector2(63, 108)
+
+[node name="Tiger" type="RigidBody2D"]
+mass = 27560.0
+script = ExtResource("1_2ofm3")
+
+[node name="Body" type="Sprite2D" parent="."]
+position = Vector2(0, -10)
+scale = Vector2(3, 3)
+texture = ExtResource("2_78vkh")
+
+[node name="Turret" type="Sprite2D" parent="."]
+position = Vector2(0, -10)
+scale = Vector2(3, 3)
+texture = ExtResource("3_fru05")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1.5, -1)
+shape = SubResource("RectangleShape2D_k7j3l")

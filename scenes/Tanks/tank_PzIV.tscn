@@ -1,0 +1,96 @@
+[gd_scene load_steps=11 format=3 uid="uid://bytwf8lfg2vxf"]
+
+[ext_resource type="Script" path="res://scripts/Player/Tank.gd" id="1_iel7n"]
+[ext_resource type="Texture2D" uid="uid://b06huupre8uax" path="res://assets/textures/Tanks/Panzer 4/ww2_top_view_hull2.png" id="2_s6jjo"]
+[ext_resource type="Texture2D" uid="uid://l43y7xyycs14" path="res://assets/textures/Tanks/Panzer 4/ww2_top_view_turret2.png" id="3_v41fm"]
+[ext_resource type="Texture2D" uid="uid://di5v1l0rt2egc" path="res://assets/textures/GunFlash.png" id="4_740b2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_acooj"]
+atlas = ExtResource("4_740b2")
+region = Rect2(0, 0, 48, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_afp6w"]
+atlas = ExtResource("4_740b2")
+region = Rect2(0, 16, 48, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rotux"]
+atlas = ExtResource("4_740b2")
+region = Rect2(0, 32, 48, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k7p27"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_acooj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_afp6w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rotux")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"Fire",
+"speed": 40.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j3l"]
+size = Vector2(63, 108)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7rl8a"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Turret:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("Turret/Node2D/AnimatedSprite2D:animation")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[node name="Pz IV" type="RigidBody2D"]
+collision_mask = 0
+mass = 27560.0
+gravity_scale = 0.0
+linear_damp = 5.0
+angular_damp = 5.0
+script = ExtResource("1_iel7n")
+
+[node name="Body" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(0, -10)
+scale = Vector2(3, 3)
+texture = ExtResource("2_s6jjo")
+
+[node name="Turret" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(-1.5, 6)
+scale = Vector2(3, 3)
+texture = ExtResource("3_v41fm")
+offset = Vector2(0.5, -3.5)
+
+[node name="Node2D" type="Node2D" parent="Turret"]
+position = Vector2(-0.5, -28.6667)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Turret/Node2D"]
+rotation = -1.5708
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_k7p27")
+animation = &"Fire"
+offset = Vector2(24, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1.5, -1)
+shape = SubResource("RectangleShape2D_k7j3l")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_7rl8a")
