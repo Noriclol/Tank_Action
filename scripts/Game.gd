@@ -17,11 +17,12 @@ func _ready():
 	multiplayer.peer_disconnected.connect(del_player)
 
 	if multiplayer.is_server():
-		add_player(1)
+		add_player(1)  # Add server's player
 
 	for id in multiplayer.get_peers():
-		await add_player(id)
+		add_player(id)
 
+	await get_tree().process_frame
 	select_team_menu._fetch_player_entries()
 
 
@@ -36,12 +37,14 @@ func add_player(id: int):
 		return
 
 	var new_player = preload("res://scenes/Player/player.tscn").instantiate()
-	player_spawn.call_deferred("add_child",new_player)
+	player_spawn.add_child(new_player)
 	new_player.init(id)
+	new_player.set_multiplayer_authority(id)
 	new_player.add_to_group("players") 
+
 	if multiplayer.is_server():
-		M_Sync.set_multiplayer_authority(multiplayer.get_unique_id())
 		M_Sync.spawned_players.append(new_player)
+		M_Sync.synchronizer.add_to_group("players")
 
 	player_added.emit(new_player)
 
@@ -68,6 +71,8 @@ func cleanup_players():
 
 func get_local_player() -> Player:
 	for player in M_Sync.spawned_players:
+		if player == M_Sync.synchronizer:
+			return null
 		if player.player_id == multiplayer.get_unique_id():
 			return player
 	return null

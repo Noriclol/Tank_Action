@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-M_Sync="*res://scripts/SyncedFields.gd"
+M_Sync="*res://scenes/synced_fields.tscn"
 
 [display]
 

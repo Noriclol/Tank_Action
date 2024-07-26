@@ -25,6 +25,8 @@ func _fetch_player_entries():
 	var players = get_tree().get_nodes_in_group("players")
 	print("Number of existing players locally: ", players.size())
 	for player in players:
+		if player == M_Sync.synchronizer:
+			continue
 		print("Existing player: ", player.name, " (ID: ", player.player_id, ")")
 		add_player_entry(player)
 
@@ -34,28 +36,18 @@ func add_player_entry(player: Player):
 	print("Adding player entry for player: ", player.player_id)
 
 	for entry in M_Sync.player_entries:
-		if entry.player_ref and entry.player_ref.player_id == player.player_id:
+		if entry is Player_Entry and entry.player_ref and entry.player_ref.player_id == player.player_id:
 			print("Player entry already exists for player: ", player.player_id)
 			return
 
-	if not player_entry_scene:
-		push_error("player_entry_scene is null")
-		return
-
 	var entry = player_entry_scene.instantiate()
-	if not entry:
-		push_error("Failed to instantiate player_entry_scene")
-		return
-
-	if not entry is Player_Entry:
+	if entry is Player_Entry:
+		entry.init(player)
+		M_Sync.player_entries.append(entry)
+		spectator_container.add_child(entry)
+		print("Player entry added to spectator container for player: ", player.player_id)
+	else:
 		push_error("Instantiated scene is not a Player_Entry")
-		return
-
-	entry.init(player)
-
-	M_Sync.player_entries.append(entry)
-	spectator_container.add_child(entry)
-	print("Player entry added to spectator container for player: ", player.player_id)
 
 func remove_player_entry(player_id: int):
 	for i in range(M_Sync.player_entries.size()):
@@ -66,19 +58,37 @@ func remove_player_entry(player_id: int):
 			break
 	
 func move_player_to_team(player: Player, team: String):
+	if not multiplayer.is_server():
+		# If not server, send RPC to server
+		rpc_id(1, "server_move_player_to_team", player.player_id, team)
+	else:
+		# If server, process the team change
+		server_move_player_to_team(player.player_id, team)
+
+
+@rpc("any_peer", "call_local")
+func server_move_player_to_team(player_id: int, team: String):
+	if not multiplayer.is_server():
+		return
+
+	var player = get_node("/root/Game/Players/Player:" + str(player_id))
+	if not player:
+		print("Player not found: ", player_id)
+		return
+
 	var entry = null
 	for e in M_Sync.player_entries:
-		if e.player_ref and e.player_ref.player_id == player.player_id:
+		if e is Player_Entry and e.player_ref and e.player_ref.player_id == player_id:
 			entry = e
 			break
-	
+
 	if not entry:
-		print("Player entry not found for player: ", player.player_id)
+		print("Player entry not found for player: ", player_id)
 		return
-	
+
 	var target_container: VBoxContainer
 	var team_color: Color
-	
+
 	match team:
 		"German":
 			target_container = g_team_container
@@ -95,18 +105,20 @@ func move_player_to_team(player: Player, team: String):
 		_:
 			print("Invalid team: ", team)
 			return
-	
+
 	if entry.get_parent() != target_container:
 		entry.reparent(target_container)
 		entry.set_color(team_color)
-		
-		# Update the entry in M_Sync.player_entries
-		var index = M_Sync.player_entries.find(entry)
-		if index != -1:
-			M_Sync.player_entries[index] = entry
-	
-	# Call an RPC to sync the team change across the network
-	player.rpc("set_team", team)
+
+	# Update all clients
+	rpc("update_player_team", player_id, team)
+
+@rpc("authority", "call_local")
+func update_player_team(player_id: int, team: String):
+	var player = get_node("/root/Game/Players/Player:" + str(player_id))
+	if player:
+		player.set_team(team)
+
 
 func _on_german_button_pressed():
 	var local_player = get_parent().get_parent().get_local_player()
