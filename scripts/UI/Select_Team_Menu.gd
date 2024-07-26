@@ -10,8 +10,6 @@ class_name Select_Team_Menu
 # can add this line to the top of the script to get the Game node
 #@export var gamescene : Game
 
-var player_entries = {}
-
 func _ready():
 	print("Select_Team_Menu ready")
 	var game_node = get_parent().get_parent()
@@ -22,9 +20,10 @@ func _ready():
 	else:
 		push_error("Parent node is not a Game node")
 
-	# Add entries for existing players
+
+func _fetch_player_entries():
 	var players = get_tree().get_nodes_in_group("players")
-	print("Number of existing players: ", players.size())
+	print("Number of existing players locally: ", players.size())
 	for player in players:
 		print("Existing player: ", player.name, " (ID: ", player.player_id, ")")
 		add_player_entry(player)
@@ -33,10 +32,11 @@ func _ready():
 
 func add_player_entry(player: Player):
 	print("Adding player entry for player: ", player.player_id)
-	if player_entries.has(player.player_id):
-		print("Player entry already exists for player: ", player.player_id)
-		return
-	
+
+	for entry in M_Sync.player_entries:
+		if entry.player_ref and entry.player_ref.player_id == player.player_id:
+			print("Player entry already exists for player: ", player.player_id)
+			return
 
 	if not player_entry_scene:
 		push_error("player_entry_scene is null")
@@ -52,38 +52,59 @@ func add_player_entry(player: Player):
 		return
 
 	entry.init(player)
-	
-	player_entries[player.player_id] = entry
+
+	M_Sync.player_entries.append(entry)
 	spectator_container.add_child(entry)
 	print("Player entry added to spectator container for player: ", player.player_id)
 
 func remove_player_entry(player_id: int):
-	if player_entries.has(player_id):
-		player_entries[player_id].queue_free()
-		player_entries.erase(player_id)
+	for i in range(M_Sync.player_entries.size()):
+		var entry = M_Sync.player_entries[i]
+		if entry.player_ref and entry.player_ref.player_id == player_id:
+			entry.queue_free()
+			M_Sync.player_entries.remove_at(i)
+			break
 	
 func move_player_to_team(player: Player, team: String):
-	if not player_entries.has(player.player_id):
+	var entry = null
+	for e in M_Sync.player_entries:
+		if e.player_ref and e.player_ref.player_id == player.player_id:
+			entry = e
+			break
+	
+	if not entry:
 		print("Player entry not found for player: ", player.player_id)
 		return
 	
-	var entry = player_entries[player.player_id]
-	entry.get_parent().remove_child(entry)
+	var target_container: VBoxContainer
+	var team_color: Color
 	
 	match team:
 		"German":
-			g_team_container.add_child(entry)
-			entry.set_color(Color.DARK_GREEN)
+			target_container = g_team_container
+			team_color = Color.DARK_GREEN
 			player.player_team = 1
 		"Soviet":
-			s_team_container.add_child(entry)
-			entry.set_color(Color.DARK_RED)
+			target_container = s_team_container
+			team_color = Color.DARK_RED
 			player.player_team = 2
 		"Spectator":
-			spectator_container.add_child(entry)
-			entry.set_color(Color.WHITE)
+			target_container = spectator_container
+			team_color = Color.WHITE
 			player.player_team = 0
-
+		_:
+			print("Invalid team: ", team)
+			return
+	
+	if entry.get_parent() != target_container:
+		entry.reparent(target_container)
+		entry.set_color(team_color)
+		
+		# Update the entry in M_Sync.player_entries
+		var index = M_Sync.player_entries.find(entry)
+		if index != -1:
+			M_Sync.player_entries[index] = entry
+	
 	# Call an RPC to sync the team change across the network
 	player.rpc("set_team", team)
 

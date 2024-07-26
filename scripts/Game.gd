@@ -5,8 +5,6 @@ class_name Game
 @onready var select_team_menu : Select_Team_Menu = $UserInterface/Select_Team_Menu
 
 
-var spawned_players = {}
-
 signal player_added(player: Player)
 signal player_removed(player_id: int)
 
@@ -22,14 +20,9 @@ func _ready():
 		add_player(1)
 
 	for id in multiplayer.get_peers():
-		add_player(id)
+		await add_player(id)
 
-
-# func _exit_tree():
-# 	if not multiplayer.is_server():
-# 		return
-# 	multiplayer.peer_connected.disconnect(add_player)
-# 	multiplayer.peer_disconnected.disconnect(del_player)
+	select_team_menu._fetch_player_entries()
 
 
 func add_player(id: int):
@@ -46,7 +39,9 @@ func add_player(id: int):
 	player_spawn.call_deferred("add_child",new_player)
 	new_player.init(id)
 	new_player.add_to_group("players") 
-	spawned_players[id] = new_player
+	if multiplayer.is_server():
+		M_Sync.set_multiplayer_authority(multiplayer.get_unique_id())
+		M_Sync.spawned_players.append(new_player)
 
 	player_added.emit(new_player)
 
@@ -54,24 +49,34 @@ func del_player(id: int):
 	if not player_spawn.has_node(str(id)):
 		return
 	player_spawn.get_node(str(id)).queue_free()
-	spawned_players.erase(id)
-	player_removed.emit(id)
+	if multiplayer.is_server():
+		M_Sync.set_multiplayer_authority(multiplayer.get_unique_id())
+		for player in M_Sync.spawned_players:
+			if player.player_id == id:
+				M_Sync.spawned_players.erase(player)
+		#Todo: fix this bugprone code
+		player_removed.emit(id)
 
 
 func cleanup_players():
 	for child in player_spawn.get_children():
-		child.queue_free()
-	spawned_players.clear()
+		child.queue_free()	
+	if multiplayer.is_server():
+		M_Sync.set_multiplayer_authority(multiplayer.get_unique_id())
+		M_Sync.spawned_players.clear()
 
 
 func get_local_player() -> Player:
-	return spawned_players[multiplayer.get_unique_id()]
+	for player in M_Sync.spawned_players:
+		if player.player_id == multiplayer.get_unique_id():
+			return player
+	return null
 
 func start_game():
 	if not multiplayer.is_server():
 		return
 	
-	for player in spawned_players.values():
+	for player in M_Sync.spawned_players:
 		if player.get_team() == "Spectator":
 			print("Not all players have selected a team. Cannot start the game.")
 			return
@@ -80,7 +85,7 @@ func start_game():
 	select_team_menu.hide()
 	
 	# Spawn tanks for each player
-	for player in spawned_players.values():
+	for player in M_Sync.spawned_players:
 		print("Spawning tank for player: ", player.player_id)
 
 

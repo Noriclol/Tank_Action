@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://df8v8scxodtn0"]
+
+[ext_resource type="Script" path="res://scripts/SyncedFields.gd" id="1_c0ggp"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cvn28"]
+properties/0/path = NodePath(".:spawned_players")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:player_entries")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="SyncedFields" type="MultiplayerSynchronizer"]
+root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_cvn28")
+script = ExtResource("1_c0ggp")

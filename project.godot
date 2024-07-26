@@ -15,6 +15,10 @@ run/main_scene="res://scenes/Multiplayer.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+M_Sync="*res://scripts/SyncedFields.gd"
+
 [display]
 
 window/size/viewport_width=1920
